@@ -37,6 +37,33 @@ export default class ProgressLoader extends HTMLElement {
         }
     }
 
+    get value() {
+        return this._value;
+    }
+
+    set value(value) {
+        const parsed = parseInt(value, 10);
+        if (!isNaN(parsed) && parsed >= 0) {
+            this._value = value;
+        }
+    }
+
+    get animate() {
+        return this._animating;
+    }
+
+    set animate(value) {
+        this._animating = !!value;
+    }
+
+    get visible() {
+        return this._visible;
+    }
+
+    set visible(value) {
+        this._visible = !!value;
+    }
+
     _createShadowDOM() {
         const shadow = this.attachShadow({mode: 'open'});
         shadow.innerHTML = this._createTemplate();
