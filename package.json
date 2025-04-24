@@ -1,0 +1,12 @@
+{
+  "name": "progress-loader",
+  "version": "1.0.0",
+  "description": "test task for Ozon",
+  "license": "ISC",
+  "author": "Petr Koval",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
