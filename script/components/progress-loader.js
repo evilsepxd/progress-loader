@@ -7,8 +7,7 @@ export default class ProgressLoader extends HTMLElement {
     _visible = true;
 
     connectedCallback() {
-        const shadow = this.attachShadow({ mode: 'open' });
-        shadow.innerHTML = this._createTemplate();
+        const shadow = this._createShadowDOM();
 
         this.progressCircle = shadow.querySelector('.progress');
 
@@ -17,12 +16,41 @@ export default class ProgressLoader extends HTMLElement {
     }
 
     render() {
-        const offset = this._circleLength - (this._value / 100) * this._circleLength;
-        this.progressCircle.style.strokeDashoffset = offset;
+        this._setCircleStrokeDashoffset();
+    }
+
+    static get observedAttributes() {
+        return ['value', 'animate', 'hidden'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case 'value':
+                this._value = parseInt(newValue, 10);
+                break;
+            case 'animate':
+                this._animating = newValue === 'true';
+                break;
+            case 'hidden':
+                this._visible = newValue === 'false';
+                break;
+        }
+    }
+
+    _createShadowDOM() {
+        const shadow = this.attachShadow({mode: 'open'});
+        shadow.innerHTML = this._createTemplate();
+
+        return shadow;
     }
 
     _setCircleStrokeDasharray() {
         this.progressCircle.style.strokeDasharray = this._circleLength;
+    }
+
+    _setCircleStrokeDashoffset() {
+        const offset = this._circleLength - (this._value / 100) * this._circleLength;
+        this.progressCircle.style.strokeDashoffset = offset;
     }
 
     _createTemplate() {
