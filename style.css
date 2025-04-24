@@ -15,4 +15,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 4rem;
+}
+
+@media (orientation: landscape) {
+    .container {
+        flex-direction: row;
+    }
+}
+
+@media (orientation: portrait) {
+    .container {
+        flex-direction: column;
+    }
 }
