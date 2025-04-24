@@ -9,7 +9,8 @@ export default class ProgressLoader extends HTMLElement {
     connectedCallback() {
         const shadow = this._createShadowDOM();
 
-        this.progressCircle = shadow.querySelector('.progress');
+        this._loader = shadow.querySelector('.progress-loader');
+        this._progressCircle = shadow.querySelector('.progress');
 
         this._setCircleStrokeDasharray();
         this.render();
@@ -17,6 +18,8 @@ export default class ProgressLoader extends HTMLElement {
 
     render() {
         this._setCircleStrokeDashoffset();
+        this._toggleActive();
+        this._toggleVisibility();
     }
 
     static get observedAttributes() {
@@ -26,15 +29,16 @@ export default class ProgressLoader extends HTMLElement {
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case 'value':
-                this._value = parseInt(newValue, 10);
+                this.value = newValue;
                 break;
             case 'animate':
-                this._animating = newValue === 'true';
+                this.animate = newValue;
                 break;
             case 'hidden':
-                this._visible = newValue === 'false';
+                this.visible = newValue;
                 break;
         }
+        this.render();
     }
 
     get value() {
@@ -45,6 +49,7 @@ export default class ProgressLoader extends HTMLElement {
         const parsed = parseInt(value, 10);
         if (!isNaN(parsed) && parsed >= 0) {
             this._value = value;
+            this._setCircleStrokeDashoffset();
         }
     }
 
@@ -54,6 +59,7 @@ export default class ProgressLoader extends HTMLElement {
 
     set animate(value) {
         this._animating = !!value;
+        this._toggleActive();
     }
 
     get visible() {
@@ -62,6 +68,7 @@ export default class ProgressLoader extends HTMLElement {
 
     set visible(value) {
         this._visible = !!value;
+        this._toggleVisibility();
     }
 
     _createShadowDOM() {
@@ -71,13 +78,29 @@ export default class ProgressLoader extends HTMLElement {
         return shadow;
     }
 
-    _setCircleStrokeDasharray() {
-        this.progressCircle.style.strokeDasharray = this._circleLength;
+    _toggleVisibility() {
+        if (this._visible) {
+            this._loader.classList.remove('hidden');
+        } else {
+            this._loader.classList.add('hidden');
+        }
+    }
+
+    _toggleActive() {
+        if (this._animating) {
+            this._loader.classList.add('active');
+        } else {
+            this._loader.classList.remove('active');
+        }
     }
 
     _setCircleStrokeDashoffset() {
         const offset = this._circleLength - (this._value / 100) * this._circleLength;
-        this.progressCircle.style.strokeDashoffset = offset;
+        this._progressCircle.style.strokeDashoffset = offset;
+    }
+
+    _setCircleStrokeDasharray() {
+        this._progressCircle.style.strokeDasharray = this._circleLength;
     }
 
     _createTemplate() {
@@ -90,7 +113,15 @@ export default class ProgressLoader extends HTMLElement {
                 
                 .progress-loader {
                     width: 100%;
-                    height: 100%;                
+                    height: 100%;
+                    
+                    &.active {
+                        animation: 1s spin infinite linear;
+                    }
+                    
+                    &.hidden {
+                        display: none;
+                    }
                 }
                 
                 circle {
@@ -108,6 +139,15 @@ export default class ProgressLoader extends HTMLElement {
                     transform: rotate(-90deg);
                     transform-origin: center;
                     transition: stroke-dashoffset 0.3s ease;
+                }
+                
+                @keyframes spin {
+                    from {
+                        transform: rotate(0deg);                    
+                    }                
+                    to {
+                        transform: rotate(360deg);
+                    }
                 }
             </style>
 
