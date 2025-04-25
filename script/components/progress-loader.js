@@ -2,15 +2,19 @@ export default class ProgressLoader extends HTMLElement {
     _radius = 40;
     _circleLength = 2 * Math.PI * this._radius;
 
-    _value = 15;
+    _value = 75;
     _animating = false;
-    _visible = true;
+    _hidden = false;
+
+    _maxValue = 100;
+    _minValue = 0;
 
     connectedCallback() {
         const shadow = this._createShadowDOM();
 
         this._loader = shadow.querySelector('.progress-loader');
         this._progressCircle = shadow.querySelector('.progress');
+        this._circleLength = this._progressCircle.getTotalLength();
 
         this._setCircleStrokeDasharray();
         this.render();
@@ -35,7 +39,7 @@ export default class ProgressLoader extends HTMLElement {
                 this.animate = newValue;
                 break;
             case 'hidden':
-                this.visible = newValue;
+                this.hidden = newValue;
                 break;
         }
         this.render();
@@ -47,7 +51,7 @@ export default class ProgressLoader extends HTMLElement {
 
     set value(value) {
         const parsed = parseInt(value, 10);
-        if (!isNaN(parsed) && parsed >= 0) {
+        if (!isNaN(parsed) && parsed >= this._minValue && parsed <= this._maxValue) {
             this._value = value;
             this._setCircleStrokeDashoffset();
         }
@@ -62,12 +66,12 @@ export default class ProgressLoader extends HTMLElement {
         this._toggleActive();
     }
 
-    get visible() {
-        return this._visible;
+    get hidden() {
+        return this._hidden;
     }
 
-    set visible(value) {
-        this._visible = !!value;
+    set hidden(value) {
+        this._hidden = !!value;
         this._toggleVisibility();
     }
 
@@ -79,10 +83,10 @@ export default class ProgressLoader extends HTMLElement {
     }
 
     _toggleVisibility() {
-        if (this._visible) {
-            this._loader.classList.remove('hidden');
-        } else {
+        if (this._hidden) {
             this._loader.classList.add('hidden');
+        } else {
+            this._loader.classList.remove('hidden');
         }
     }
 
@@ -95,7 +99,7 @@ export default class ProgressLoader extends HTMLElement {
     }
 
     _setCircleStrokeDashoffset() {
-        const offset = this._circleLength - (this._value / 100) * this._circleLength;
+        const offset = this._circleLength - (this._value / this._maxValue) * this._circleLength;
         this._progressCircle.style.strokeDashoffset = offset;
     }
 
