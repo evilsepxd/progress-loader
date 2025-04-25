@@ -23,6 +23,10 @@
             border: 2px solid black;
             border-radius: 1.5rem;
 
+            &:invalid {
+                border-color: red;
+            }
+
             &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
                 -webkit-appearance: none;
                 margin: 0;
