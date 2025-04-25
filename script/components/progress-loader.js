@@ -27,7 +27,7 @@ export default class ProgressLoader extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['value', 'animate', 'hidden'];
+        return ['value', 'animate', 'hide'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -38,8 +38,8 @@ export default class ProgressLoader extends HTMLElement {
             case 'animate':
                 this.animate = newValue;
                 break;
-            case 'hidden':
-                this.hidden = newValue;
+            case 'hide':
+                this.hide = newValue;
                 break;
         }
         this.render();
@@ -66,11 +66,11 @@ export default class ProgressLoader extends HTMLElement {
         this._toggleActive();
     }
 
-    get hidden() {
+    get hide() {
         return this._hidden;
     }
 
-    set hidden(value) {
+    set hide(value) {
         this._hidden = !!value;
         this._toggleVisibility();
     }
@@ -124,7 +124,7 @@ export default class ProgressLoader extends HTMLElement {
                     }
                     
                     &.hidden {
-                        display: none;
+                        visibility: hidden;
                     }
                 }
                 

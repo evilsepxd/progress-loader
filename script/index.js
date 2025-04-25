@@ -24,8 +24,8 @@ animateInput.addEventListener('change', e => {
 
 hideInput.addEventListener('change', e => {
     if (e.target.checked) {
-        loader.setAttribute('hidden', e.target.checked);
+        loader.setAttribute('hide', e.target.checked);
     } else {
-        loader.removeAttribute('hidden');
+        loader.removeAttribute('hide');
     }
 });
